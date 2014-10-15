@@ -19,8 +19,7 @@ nexus_dir_base           : "/home/{{nexus_user}}"
 nexus_dir_base_bundle    : "/home/{{nexus_user}}/{{nexus_service_name}}"
 nexus_dir_sonatype_work  : "{{nexus_dir_base}}/{{nexus_sonatype_work_name}}"
 nexus_dir_plugins        : "{{nexus_dir_base_bundle}}/nexus/WEB-INF/plugin-repository"
-tempdir                  : "/tmp"
-nexus_dir_tmp            : "{{ tempdir.stdout }}"
+nexus_dir_tmp            : "/tmp" # or override with "{{ tempdir.stdout }} in order to have be sure to download the file"
 nexus_archive            : "nexus-{{nexus_version}}-bundle.tar.gz"
 
 ## Nexus Plugins Section
