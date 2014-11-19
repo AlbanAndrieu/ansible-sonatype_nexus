@@ -2,8 +2,9 @@
 # This playbook nexus
 - hosts: all
   sudo: true
-  vars_files: 
-    - defaults/security.yml
 
   roles:
     - { role: ./ }
+    
+  vars:
+      nexus_home: "/usr/local/{{nexus_user}}"
