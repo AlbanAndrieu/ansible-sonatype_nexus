@@ -1,8 +1,9 @@
 ---
 # This playbook nexus
 - hosts: all
-  sudo: True
+  sudo: true
   vars_files: 
     - defaults/security.yml
+
   roles:
-    - nexus
+    - { role: ./ }
