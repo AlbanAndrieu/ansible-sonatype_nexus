@@ -36,8 +36,13 @@ nexus_plugins:
    - url  : "{{ nexus_plugins_p2_url }}/{{ nexus_plugins_p2_dir }}/"
      file : "{{ nexus_plugins_p2_file }}"
 
+<<<<<<< Updated upstream
    - url  : "{{ nexus_plugins_p2_url }}/{{ nexus_plugins_p2_bridge_dir }}/"
      file : "{{ nexus_plugins_p2_bridge_file }}"
+=======
+   - url  : "{{nexus_plugins_p2_url}}/{{nexus_plugins_p2_bridge_dir}}/"
+     file : "{{nexus_plugins_p2_bridge_file}}"
+>>>>>>> Stashed changes
 
 ## Nexus Setting Section
 ### Global Setting
@@ -53,8 +58,6 @@ nexus_httpProxy_port                                  : 8082
 nexus_httpProxy_proxyPolicy                           : "strict"
 ### Routing
 nexus_routing_resolveLinks                            : "true"
-
-
 
 ### Tasks
 
