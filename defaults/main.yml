@@ -38,43 +38,6 @@ nexus_plugins:
 
    - url  : "{{ nexus_plugins_p2_url }}/{{ nexus_plugins_p2_bridge_dir }}/"
      file : "{{ nexus_plugins_p2_bridge_file }}"
-## Security Section
-nexus_users     :
-   - id        : "admin"
-     firstName : "Administrator"
-     lastName  : "User"
-     password  : "$shiro1$SHA-512$1024$G+rxqm4Qw5/J54twR6BrSQ==$2ZUS4aBHbGGZkNzLugcQqhea7uPOXhoY4kugop4r4oSAYlJTyJ9RyZYLuFBmNzDr16Ii1Q+O6Mn1QpyBA1QphA=="
-     status    : "active"
-     email     : "changeme@yourcompany.com"
-
-   - id        : "deployment"
-     firstName : "Deployment"
-     lastName  : "User"
-     password  : "b2a0e378437817cebdf753d7dff3dd75483af9e0"
-     status    : "active"
-     email     : "changeme1@yourcompany.com"
-
-   - id        : "anonymous"
-     firstName : "Nexus"
-     lastName  : "Anonymous User"
-     password  : "$shiro1$SHA-512$1024$bMu8OG8U1JLUYbONuZy2RA==$Qf57l0Ty8fw+/r28Qwa+z9haVuf5qOiQ1BSghmerAlksc140qsVEiDUp3IXP+MlM1QnqLIg/jka4g815ofyTfQ=="
-     status    : "active"
-     email     : "changeme2@yourcompany.com"
-nexus_userRoleMappings :
-   - userId    : "admin"
-     source    : "default"
-     roles     : 
-        - "nx-admin"
-   - userId    : "deployment"
-     source    : "default"
-     roles     : 
-        - "nx-deployment"
-        - "repository-any-full"
-   - userId    : "anonymous"
-     source    : "default"
-     roles     : 
-        - "anonymous"        
-        - "repository-any-read"
 
 ## Nexus Setting Section
 ### Global Setting
