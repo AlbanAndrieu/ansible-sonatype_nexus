@@ -58,21 +58,17 @@
     state=directory
     recurse=yes
   when: nexus_download.changed
-  tags: nexus_setup
   
 - name: nexus | Stat {{nexus_dir_base}}/{{tar_dir_name.stdout}}
   stat:
     path="{{nexus_dir_base}}/{{tar_dir_name.stdout}}"
   register: nexus_archive_extracted_present
-  tags: nexus_setup
   
 - debug: msg="nexus | Path exists and is a directory"
   when: nexus_archive_extracted_present.stat.isdir is defined and nexus_archive_extracted_present.stat.isdir == true
-  tags: nexus_setup
   
 - fail: msg="nexus | Whoops! file ownership has changed"
   when: nexus_archive_extracted_present.stat.pw_name != '{{nexus_user}}'
-  tags: nexus_setup
       
 - name: nexus | update sym link nexus 
   file: 
@@ -82,7 +78,6 @@
      group="{{ nexus_group }}"
      state=link
   notify: restart nexus
-  tags: nexus_setup
 
 - name: nexus | Install boot script
   template:
@@ -92,7 +87,7 @@
     group=root 
     mode=0755
   notify: restart nexus
-  tags: nexus_setup
+
   
 #- name: nexus | Deploy nexus.properties
 #  template:
@@ -137,4 +132,3 @@
   
 - name: Cleanup temporary directory
   file: name={{ tempdir.stdout }} state=absent
-  tags: nexus_setup
