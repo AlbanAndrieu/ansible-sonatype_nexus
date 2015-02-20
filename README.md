@@ -1,6 +1,5 @@
 ## nexus
-[![Build Status](https://travis-ci.org/ahelal/ansible-sonar.svg?branch=master)](https://travis-ci.org/ahelal/ansible-sonar)
-
+[![Build Status](https://travis-ci.org/ahelal/ansible-sonatype_nexus.svg)](https://travis-ci.org/ahelal/ansible-sonatype_nexus)
 
 ### Role variables
 
