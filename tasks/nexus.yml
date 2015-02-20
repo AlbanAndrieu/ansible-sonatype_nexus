@@ -15,24 +15,21 @@
      comment="Nexsus user"
 
 - name: nexus | Create temporary directory
-  shell: mktemp -d
-  register: tempdir
-  sudo: true
-  tags: nexus_setup
+  file:
+    path="{{ nexus_dir_tmp }}"
+    state=directory
   
 - name: nexus | Download nexus archive
   get_url: 
-     url="{{nexus_download_URL}}"
-     dest="{{nexus_dir_tmp}}/{{nexus_archive}}"
-  register: nexus_download     
-  tags: nexus_setup
+     url="{{ nexus_download_URL }}"
+     dest="{{ nexus_dir_tmp }}/{{ nexus_archive }}"
+  register: nexus_download
 
 - name: nexus | Resolve nexus_dir name from tar
   shell: 
     tar tf {{nexus_dir_tmp}}/{{nexus_archive}}  | head -1
   changed_when: False   
   register: tar_dir_name
-  tags: nexus_setup
   
 - name: nexus | Unarchive nexus 
   unarchive: 
@@ -41,22 +38,31 @@
      dest="{{ nexus_dir_base }}/"
      creates="{{ nexus_dir_base }}/{{ tar_dir_name.stdout }}/bin"
   sudo_user: "{{ nexus_user }}"
-  when: nexus_download.changed      
+  when: nexus_download | changed
   register: nexus_unarchive
-  tags: nexus_setup
 
 - name: nexus | Change archive nexus ownership
-  file: path={{nexus_dir_base}}/{{tar_dir_name.stdout}} owner={{nexus_user}} group={{nexus_group}} state=directory recurse=yes
-  when: nexus_download.changed
-  tags: nexus_setup
+  file:
+    path="{{ nexus_dir_base }}/{{ tar_dir_name.stdout }}"
+    owner="{{ nexus_user }}"
+    group="{{ nexus_group }}"
+    state=directory
+    recurse=yes
+  when: nexus_download |changed
   
 - name: nexus | Change sonatype-work nexus ownership (and create)
-  file: path={{nexus_dir_base}}/sonatype-work/ owner={{nexus_user}} group={{nexus_group}} state=directory recurse=yes
+  file:
+    path={{nexus_dir_base}}/sonatype-work/
+    owner={{nexus_user}}
+    group={{nexus_group}}
+    state=directory
+    recurse=yes
   when: nexus_download.changed
   tags: nexus_setup
   
 - name: nexus | Stat {{nexus_dir_base}}/{{tar_dir_name.stdout}}
-  stat: path={{nexus_dir_base}}/{{tar_dir_name.stdout}}
+  stat:
+    path="{{nexus_dir_base}}/{{tar_dir_name.stdout}}"
   register: nexus_archive_extracted_present
   tags: nexus_setup
   
