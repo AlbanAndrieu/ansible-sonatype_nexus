@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 #
 # Copyright (c) 1999, 2006 Tanuki Software Inc.
@@ -11,7 +11,7 @@
 # These settings can be modified to fit the needs of your application
 
 # Set this to the root of the Nexus installation
-NEXUS_HOME="{{nexus_dir_base}}/{{nexus_service_name}}"
+NEXUS_HOME="{{ nexus_dir_base }}/{{ nexus_service_name }}"
 
 # If specified, the Wrapper will be run as the specified user.
 
@@ -20,11 +20,11 @@ NEXUS_HOME="{{nexus_dir_base}}/{{nexus_service_name}}"
 # NOTE - This will set the user which is used to run the Wrapper as well as
 #  the JVM and is not useful in situations where a privileged resource or
 #  port needs to be allocated prior to the user being changed.
-RUN_AS_USER={{nexus_user}}
+#RUN_AS_USER={{ nexus_user }}
 
 # Application
-APP_NAME="{{nexus_service_desc}}"
-APP_LONG_NAME="{{nexus_service_desc}}"
+APP_NAME="nexus"
+APP_LONG_NAME="Nexus OSS"
 
 # Priority at which to run the wrapper.  See "man nice" for valid priorities.
 #  nice is only used if a priority is specified.
@@ -171,6 +171,9 @@ case "$DIST_OS" in
         fi
         DIST_ARCH='universal'
         ;;
+    'aix')
+        DIST_BITS=`getconf KERNEL_BITMODE`
+        ;;
 esac
 
 outputFile() {
@@ -289,7 +292,7 @@ checkUser() {
 
             # Still want to change users, recurse.  This means that the user will only be
             #  prompted for a password once. Variables shifted by 1
-            su -m $RUN_AS_USER -c "\"$REALPATH\" $2"
+            su - $RUN_AS_USER -c "\"$REALPATH\" $2"
 
             # Now that we are the original user again, we may need to clean up the lock file.
             if [ "X$LOCKPROP" != "X" ]
@@ -545,5 +548,3 @@ case "$1" in
         exit 1
         ;;
 esac
-
-exit 0
