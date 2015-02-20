@@ -1,15 +1,4 @@
 ---
-
-script:
-  - ansible --version
-  - export ANSIBLE_ROLES_PATH="../"
-#  - echo localhost > inventory
-  - ansible-playbook -i hosts --syntax-check nexus.yml
-  - ansible-playbook -i hosts --connection=local --sudo -vvvv nexus.yml
-
-
-
----
 language: python
 python: "2.7"
 
@@ -33,9 +22,9 @@ script:
     - echo -e '[defaults]\nroles_path = ../' > ansible.cfg
     - echo -e "\e[31m######AnsibleVersion#######\e[0m"
     - ansible --version
+
     # 1st: check syntax
     - echo "\e[31m######***************************** SYNTAX CHECK (1) *****************************\e[0m"
-
     - ansible-playbook -i tests/local.ini tests/test1.yml --syntax-check
     # 2nd:  Make sure we run the entire playbook
     - echo "***************************** RUN PLAY (2) *****************************"
