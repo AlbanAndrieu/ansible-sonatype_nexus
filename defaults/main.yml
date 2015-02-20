@@ -13,13 +13,12 @@ nexus_group                      : nexus
 nexus_home                       : "/home/{{ nexus_user }}"
 ### Directory & files
 nexus_service_name               : "nexus"     ## Think twice before changing it :)
-nexus_service_desc               : "nexusOSS"
 nexus_sonatype_work_name         : "sonatype-work"
 nexus_dir_base                   : "{{ nexus_home }}"
 nexus_dir_base_bundle            : "{{ nexus_home }}/{{ nexus_service_name }}"
 nexus_dir_sonatype_work          : "{{ nexus_dir_base }}/{{ nexus_sonatype_work_name }}"
 nexus_dir_plugins                : "{{ nexus_dir_base_bundle }}/nexus/WEB-INF/plugin-repository"
-nexus_dir_tmp                    : "/tmp"
+nexus_dir_temp                   : "/tmp"
 nexus_archive                    : "nexus-{{ nexus_version }}-bundle.tar.gz"
 
 ## Nexus Plugins Section
@@ -38,3 +37,4 @@ nexus_plugins                    :
 
                           - url  : "{{ nexus_plugins_p2_url }}/{{ nexus_plugins_p2_bridge_dir }}/"
                             file : "{{ nexus_plugins_p2_bridge_file }}"
+nexus_wait_timeout               : 180

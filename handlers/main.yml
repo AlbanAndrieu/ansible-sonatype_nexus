@@ -10,5 +10,5 @@
 - name: wait_for_nexus
   wait_for:
     port="{{ jetty_port }}"
-    delay=30
+    delay=1
     timeout="{{ nexus_wait_timeout }}"

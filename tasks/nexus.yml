@@ -1,75 +1,64 @@
 ---
 
-- name: nexus | Fail if java is not installed
-  command: which java
-  changed_when: 0
-  failed_when: java_path.rc != 0
+- name: nexus | Check java binary
+  command: "which java"
+  changed_when: False
+  failed_when: False
   register: java_path
 
+- name: nexus | Fail if java is not installed
+  fail:
+    msg="Java is not installed or not in path"
+  when: java_path.rc != 0
+
+# init.d will break if user has no shell :(
+# Todo: not use the offical bin/nexus
 - name: nexus | Create nexus user
   user: 
      name="{{ nexus_user }}"
      home="{{ nexus_home }}"
-     shell="/bin/false"
+     shell="/bin/bash"
      append="true"
-     comment="Nexsus user"
+     comment="nexsus user"
 
 - name: nexus | Create temporary directory
   file:
-    path="{{ nexus_dir_tmp }}"
+    path="{{ nexus_dir_temp }}"
     state=directory
   
 - name: nexus | Download nexus archive
   get_url: 
      url="{{ nexus_download_URL }}"
-     dest="{{ nexus_dir_tmp }}/{{ nexus_archive }}"
+     dest="{{ nexus_dir_temp }}/{{ nexus_archive }}"
   register: nexus_download
 
 - name: nexus | Resolve nexus_dir name from tar
   shell: 
-    tar tf {{nexus_dir_tmp}}/{{nexus_archive}}  | head -1
-  changed_when: False   
+    tar tf {{nexus_dir_temp}}/{{nexus_archive}} | head -1
+  changed_when: False
   register: tar_dir_name
+  when: nexus_download | changed
   
 - name: nexus | Unarchive nexus 
   unarchive: 
      copy=no
-     src="{{ nexus_dir_tmp }}/{{ nexus_archive }}"
+     src="{{ nexus_dir_temp }}/{{ nexus_archive }}"
      dest="{{ nexus_dir_base }}/"
      creates="{{ nexus_dir_base }}/{{ tar_dir_name.stdout }}/bin"
   sudo_user: "{{ nexus_user }}"
-  when: nexus_download | changed
+  notify: restart nexus
   register: nexus_unarchive
+  when: nexus_download | changed
 
-- name: nexus | Change archive nexus ownership
-  file:
-    path="{{ nexus_dir_base }}/{{ tar_dir_name.stdout }}"
-    owner="{{ nexus_user }}"
-    group="{{ nexus_group }}"
-    state=directory
-    recurse=yes
-  when: nexus_download |changed
-  
 - name: nexus | Change sonatype-work nexus ownership (and create)
   file:
-    path={{nexus_dir_base}}/sonatype-work/
-    owner={{nexus_user}}
-    group={{nexus_group}}
+    path={{ nexus_dir_base }}/sonatype-work/
+    owner={{ nexus_user }}
+    group={{ nexus_group }}
     state=directory
     recurse=yes
-  when: nexus_download.changed
-  
-- name: nexus | Stat {{nexus_dir_base}}/{{tar_dir_name.stdout}}
-  stat:
-    path="{{nexus_dir_base}}/{{tar_dir_name.stdout}}"
-  register: nexus_archive_extracted_present
-  
-- debug: msg="nexus | Path exists and is a directory"
-  when: nexus_archive_extracted_present.stat.isdir is defined and nexus_archive_extracted_present.stat.isdir == true
-  
-- fail: msg="nexus | Whoops! file ownership has changed"
-  when: nexus_archive_extracted_present.stat.pw_name != '{{nexus_user}}'
-      
+  when: nexus_download | changed
+
 - name: nexus | update sym link nexus 
   file: 
      src="{{ nexus_dir_base }}/{{ tar_dir_name.stdout }}"
@@ -77,7 +66,7 @@
      owner="{{ nexus_user }}"
      group="{{ nexus_group }}"
      state=link
-  notify: restart nexus
+  when: nexus_download | changed
 
 - name: nexus | Install boot script
   template:
@@ -97,7 +86,7 @@
 #    mode=0644
 #  notify: restart nexus
 
-- name: nexus | Start nexus to create sonatype-work
+- name: nexus | Start/Restart nexus to create sonatype-work
   service:
      name="{{ nexus_service_name }}"
      state=restarted
@@ -106,7 +95,7 @@
 - name: nexus | Wait for nexus to start listening on tcp
   wait_for:
      port="{{ jetty_port }}"
-     timeout=120
+     timeout="{{ nexus_wait_timeout }}"
      state=started
   when: nexus_unarchive | changed  
 
@@ -115,21 +104,25 @@
      path="{{ nexus_dir_sonatype_work }}/nexus/conf/nexus.xml"
   when: nexus_unarchive | changed  
 
-#- name: nexus | Stop nexus
-#  service:
-#     name="{{nexus_service_name}}"
-#     state=stopped
-#  when: nexus_unarchive | changed
+- name: nexus | Deploy index.html
+  template:
+     src=index.html.j2
+     dest="{{ nexus_dir_sonatype_work }}/index.html"
+     owner="{{ nexus_user }}"
+     group="{{ nexus_group }}"
+     mode=0644
 
-#- name: nexus | Deploy index.html
-#  template:
-#     src=index.html.j2
-#     dest="{{nexus_dir_sonatype_work}}/index.html"
-#     owner="{{nexus_user}}"
-#     group="{{nexus_group}}"
-#     mode=0644
-  
-- name: nexus | Cleanup temporary directory
-  file:
-    name={{ tempdir.stdout }}
-    state=absent
+# No need to run if we just installed the handler will do that to save time
+- name: nexus | start nexus
+  service:
+     name="{{ nexus_service_name }}"
+     state=started
+  when: nexus_unarchive.changed == False
+
+- name: nexus | Ensure nexus is up and listening
+  wait_for:
+    port="{{ jetty_port }}"
+    delay=1
+    timeout="{{ nexus_wait_timeout }}"
+  when: nexus_unarchive.changed == False
+
