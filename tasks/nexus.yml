@@ -88,7 +88,6 @@
     mode=0755
   notify: restart nexus
 
-  
 #- name: nexus | Deploy nexus.properties
 #  template:
 #    src=nexus.properties.j2
@@ -116,19 +115,21 @@
      path="{{ nexus_dir_sonatype_work }}/nexus/conf/nexus.xml"
   when: nexus_unarchive | changed  
 
-- name: nexus | Stop nexus
-  service:
-     name="{{nexus_service_name}}"
-     state=stopped
-  when: nexus_unarchive | changed  
+#- name: nexus | Stop nexus
+#  service:
+#     name="{{nexus_service_name}}"
+#     state=stopped
+#  when: nexus_unarchive | changed
 
-    #- name: nexus | Deploy index.html
-    #  template:
-    #     src=index.html.j2
-    #     dest="{{nexus_dir_sonatype_work}}/index.html"
-    #     owner="{{nexus_user}}"
-    #     group="{{nexus_group}}"
-    #     mode=0644
+#- name: nexus | Deploy index.html
+#  template:
+#     src=index.html.j2
+#     dest="{{nexus_dir_sonatype_work}}/index.html"
+#     owner="{{nexus_user}}"
+#     group="{{nexus_group}}"
+#     mode=0644
   
-- name: Cleanup temporary directory
-  file: name={{ tempdir.stdout }} state=absent
+- name: nexus | Cleanup temporary directory
+  file:
+    name={{ tempdir.stdout }}
+    state=absent

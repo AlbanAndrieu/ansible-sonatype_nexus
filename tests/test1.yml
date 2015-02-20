@@ -2,7 +2,6 @@
 # This playbook nexus
 - hosts: all
   sudo: true
-
   vars_files:
     - "test1_var.yml"
   roles:
