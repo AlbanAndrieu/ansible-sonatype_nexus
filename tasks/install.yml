@@ -82,17 +82,6 @@
      state=restarted
   when: nexus_unarchive | changed
 
-- name: install | Wait for nexus to start listening on tcp
-  wait_for:
-     port="{{ jetty_port }}"
-     timeout="{{ nexus_wait_timeout }}"
-     state=started
-  when: nexus_unarchive | changed  
-
-- name: install | Wait for nexus to create sonatype-work
-  wait_for:
-     path="{{ nexus_dir_sonatype_work }}/nexus/conf/nexus.xml"
-  when: nexus_unarchive | changed  
 
 
 

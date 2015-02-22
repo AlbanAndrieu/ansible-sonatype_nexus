@@ -7,7 +7,17 @@
 
 - include     : settings.yml
 
+# Flush handler to restart nexus after untar
+- meta: flush_handlers
+  when: nexus_unarchive | changed
+
+- name: main | Wait for nexus to create sonatype-work
+  wait_for:
+     path="{{ nexus_dir_sonatype_work }}/nexus/conf/nexus.xml"
+  when: nexus_unarchive | changed
+
 # No need to run if we just installed the handler will do that to save time
+# Its intedended for runs that do not install nexus
 - name: main | start nexus
   service:
      name="{{ nexus_service_name }}"
