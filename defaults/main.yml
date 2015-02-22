@@ -1,18 +1,21 @@
 ---
-## Nexus Setup Setting Section
+# Nexus Setup Setting Section
 nexus_host                       : "{{ ansible_fqdn }}"
 nexus_version                    : "2.11.2-03"
 nexus_download_URL               : "http://download.sonatype.com/nexus/oss/{{ nexus_archive }}"
-### Jetty
+
+# Jetty
 jetty_bind                       : "0.0.0.0"
-jetty_port                       : "8081"
+jetty_port                       : "8082"
 nexus_url                        : "http://{{ nexus_host }}:{{ jetty_port }}"
-### Nexus system user
+
+# Nexus system user
 nexus_user                       : nexus
 nexus_group                      : nexus
 nexus_home                       : "/home/{{ nexus_user }}"
-### Directory & files
-nexus_service_name               : "nexus"     ## Think twice before changing it :)
+
+# Directory & files
+nexus_service_name               : "nexus"     # Think twice before changing it :)
 nexus_sonatype_work_name         : "sonatype-work"
 nexus_dir_base                   : "{{ nexus_home }}"
 nexus_dir_base_bundle            : "{{ nexus_home }}/{{ nexus_service_name }}"
@@ -21,20 +24,23 @@ nexus_dir_plugins                : "{{ nexus_dir_base_bundle }}/nexus/WEB-INF/pl
 nexus_dir_temp                   : "/tmp"
 nexus_archive                    : "nexus-{{ nexus_version }}-bundle.tar.gz"
 
-## Nexus Plugins Section
-### p2 plugins
+# Nexus Plugins Section
 nexus_plugins_install            : False
-nexus_plugins_p2_version         : "2.8.1-m1"
-nexus_plugins_p2_url             : 'https://repository.sonatype.org/service/local/repositories/nexus_oss-1069/content/org/sonatype/nexus/plugins'
-nexus_plugins_p2_dir             : "nexus-p2-repository-plugin/{{ nexus_plugins_p2_version }}"
-nexus_plugins_p2_file            : "nexus-p2-repository-plugin-{{ nexus_plugins_p2_version }}-bundle.zip"
-nexus_plugins_p2_bridge_dir      : "nexus-p2-bridge-plugin/{{ nexus_plugins_p2_version }}"
-nexus_plugins_p2_bridge_file     : "nexus-p2-bridge-plugin-{{ nexus_plugins_p2_version }}-bundle.zip"
-### Array of plugins to be installed
+# Array of plugins to be installed
 nexus_plugins                    :
                           - url  : "{{ nexus_plugins_p2_url }}/{{ nexus_plugins_p2_dir }}/"
                             file : "{{ nexus_plugins_p2_file }}"
 
                           - url  : "{{ nexus_plugins_p2_url }}/{{ nexus_plugins_p2_bridge_dir }}/"
                             file : "{{ nexus_plugins_p2_bridge_file }}"
+
+# p2 plugins
+nexus_plugins_p2_version         : "2.8.1-m1"
+nexus_plugins_p2_url             : 'https://repository.sonatype.org/service/local/repositories/nexus_oss-1069/content/org/sonatype/nexus/plugins'
+nexus_plugins_p2_dir             : "nexus-p2-repository-plugin/{{ nexus_plugins_p2_version }}"
+nexus_plugins_p2_file            : "nexus-p2-repository-plugin-{{ nexus_plugins_p2_version }}-bundle.zip"
+nexus_plugins_p2_bridge_dir      : "nexus-p2-bridge-plugin/{{ nexus_plugins_p2_version }}"
+nexus_plugins_p2_bridge_file     : "nexus-p2-bridge-plugin-{{ nexus_plugins_p2_version }}-bundle.zip"
+
+# wait_for time out
 nexus_wait_timeout               : 180
