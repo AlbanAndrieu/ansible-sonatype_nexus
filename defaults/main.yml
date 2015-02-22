@@ -6,7 +6,7 @@ nexus_download_URL               : "http://download.sonatype.com/nexus/oss/{{ ne
 
 # Jetty
 jetty_bind                       : "0.0.0.0"
-jetty_port                       : "8082"
+jetty_port                       : "8081"
 nexus_url                        : "http://{{ nexus_host }}:{{ jetty_port }}"
 
 # Nexus system user
