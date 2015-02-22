@@ -1,4 +1,5 @@
 ---
+
 - name: settings | Deploy nexus.properties
   template:
     src=nexus.properties.j2
@@ -17,20 +18,24 @@
      group="{{ nexus_group }}"
      mode=0644
 
-#- name: settings | Deploy security.xml
-#  template:
-#    src=security.xml.j2
-#    dest="{{ nexus_dir_sonatype_work }}/nexus/conf/security.xml"
-#    owner={{ nexus_user }}
-#    group={{ nexus_user }}
-#    mode=0644
-#  notify: restart nexus
-#
-#- name: settings | Deploy nexus.xml
-#  template:
-#    src=nexus.xml.j2
-#    dest="{{ nexus_dir_sonatype_work }}/nexus/conf/nexus.xml"
-#    owner={{nexus_user}}
-#    group={{nexus_user}}
-#    mode=0644
-#  notify: restart nexus
+- name: setting | Check for .git in sonatype_work/nexus/conf/.git
+  stat:
+    path="{{ nexus_dir_sonatype_work }}/nexus/conf/.git"
+  register: sonatype_work_git
+  when: nexus_config_pull
+
+- name: setting | if no .get remove sonatype_work/nexus/conf
+  file:
+    path="{{ nexus_dir_sonatype_work }}/nexus/conf"
+    state=absent
+  when: nexus_config_pull and not sonatype_work_git.stat.exists
+
+- name: settings | Fetch configuration from git
+  git:
+    repo="{{ nexus_config_repo }}"
+    dest="{{ nexus_dir_sonatype_work }}/nexus/conf/"
+    version="{{ nexus_config_version | default(omit) }}"
+    force=yes
+    accept_hostkey=yes
+  sudo_user: "{{ nexus_user }}"
+  when: nexus_config_pull

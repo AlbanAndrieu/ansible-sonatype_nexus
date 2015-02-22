@@ -24,6 +24,12 @@ nexus_dir_plugins                : "{{ nexus_dir_base_bundle }}/nexus/WEB-INF/pl
 nexus_dir_temp                   : "/tmp"
 nexus_archive                    : "nexus-{{ nexus_version }}-bundle.tar.gz"
 
+# Download  config from GIT
+# **** WARNING WILL REMOVE CONF DIR  ******
+nexus_config_pull                : False
+nexus_config_repo                : False
+#nexus_config_version             : "HEAD"  # optional version
+
 # Nexus Plugins Section
 nexus_plugins_install            : False
 # Array of plugins to be installed
