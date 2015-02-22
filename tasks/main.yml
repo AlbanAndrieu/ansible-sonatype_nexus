@@ -1,7 +1,22 @@
 ---
 
-- include     : nexus.yml
+- include     : install.yml
+
 - include     : plugins.yml
   when        : nexus_plugins_install  
-#- include     : settings.yml
 
+- include     : settings.yml
+
+# No need to run if we just installed the handler will do that to save time
+- name: main | start nexus
+  service:
+     name="{{ nexus_service_name }}"
+     state=started
+  when: nexus_unarchive.changed == False and not nexus_properties.changed
+
+- name: main | Ensure nexus is up and listening
+  wait_for:
+    port="{{ jetty_port }}"
+    delay=1
+    timeout="{{ nexus_wait_timeout }}"
+  when: nexus_unarchive.changed == False and not nexus_properties.changed
