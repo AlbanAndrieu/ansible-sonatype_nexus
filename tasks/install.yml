@@ -19,7 +19,7 @@
      home="{{ nexus_home }}"
      shell="/bin/bash"
      append="true"
-     comment="nexsus user"
+     comment="nexus user"
 
 - name: install | Create temporary directory
   file:
