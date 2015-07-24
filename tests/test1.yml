@@ -6,4 +6,4 @@
     - "test1_var.yml"
 
   roles:
-    - { role: ../ }
+    - { role: ../../ }
