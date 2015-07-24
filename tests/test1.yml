@@ -4,5 +4,6 @@
   sudo: true
   vars_files:
     - "test1_var.yml"
+
   roles:
-    - ansible-sonatypeNexus
+    - { role: ../ }
