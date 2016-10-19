@@ -14,7 +14,7 @@
 # init.d will break if user has no shell :(
 # Todo: not use the offical bin/nexus
 - name: install | Create nexus user
-  user: 
+  user:
      name="{{ nexus_user }}"
      home="{{ nexus_home }}"
      shell="/bin/bash"
@@ -25,21 +25,21 @@
   file:
     path="{{ nexus_dir_temp }}"
     state=directory
-  
+
 - name: install | Download nexus tar.gz archive
-  get_url: 
+  get_url:
      url="{{ nexus_download_URL }}"
      dest="{{ nexus_dir_temp }}/{{ nexus_archive }}"
   register: nexus_download
 
 - name: install | Resolve nexus_dir name from tar archive
-  shell: 
+  shell:
     tar tf {{nexus_dir_temp}}/{{nexus_archive}} | head -1
   changed_when: False
   register: tar_dir_name
 
 - name: install | Unarchive nexus.tar.gz
-  unarchive: 
+  unarchive:
      copy=no
      src="{{ nexus_dir_temp }}/{{ nexus_archive }}"
      dest="{{ nexus_dir_base }}/"
@@ -58,8 +58,8 @@
     recurse=yes
   when: nexus_download | changed
 
-- name: install | update sym link nexus 
-  file: 
+- name: install | update sym link nexus
+  file:
      src="{{ nexus_dir_base }}/{{ tar_dir_name.stdout }}"
      dest="{{ nexus_dir_base }}/{{ nexus_service_name }}"
      owner="{{ nexus_user }}"
@@ -69,10 +69,19 @@
 
 - name: install | Install boot script
   template:
-    src=nexus_init.d.j2 
+    src=nexus_init.d.j2
     dest="/etc/init.d/{{ nexus_service_name }}"
-    owner=root 
-    group=root 
+    owner=root
+    group=root
+    mode=0755
+  notify: restart nexus
+
+- name: install | Install boot service script
+  template:
+    src=nexus.service.j2
+    dest="/lib/systemd/system/{{ nexus_service_name }}.service"
+    owner=root
+    group=root
     mode=0755
   notify: restart nexus
 
