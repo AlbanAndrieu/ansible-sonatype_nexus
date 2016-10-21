@@ -5,9 +5,9 @@ Description=Sonatype Nexus
 Type=forking
 EnvironmentFile=-/etc/default/nexus
 PIDFile={{ nexus_dir_base }}/{{ nexus_service_name }}/bin/jsw/linux-x86-64/nexus.pid
-ExecStart={{ nexus_dir_base }}/{{ nexus_service_name }}/bin/nexus start
-ExecReload={{ nexus_dir_base }}/{{ nexus_service_name }}/bin/nexus restart
-ExecStop={{ nexus_dir_base }}/{{ nexus_service_name }}/bin/nexus stop
+ExecStart=/etc/init.d/nexus start
+ExecReload=/etc/init.d/nexus restart
+ExecStop=/etc/init.d/nexus stop
 
 [Install]
 Alias=nexus
