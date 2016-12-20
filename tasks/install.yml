@@ -82,7 +82,7 @@
     dest="/lib/systemd/system/{{ nexus_service_name }}.service"
     owner=root
     group=root
-    mode=0755
+    mode=0644
   notify: restart nexus
 
 - name: install | Start/Restart nexus to create sonatype-work
