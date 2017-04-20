@@ -44,7 +44,7 @@
      src="{{ nexus_dir_temp }}/{{ nexus_archive }}"
      dest="{{ nexus_dir_base }}/"
      creates="{{ nexus_dir_base }}/{{ tar_dir_name.stdout }}/bin"
-  sudo_user: "{{ nexus_user }}"
+  become_user: "{{ nexus_user }}"
   notify: restart nexus
   register: nexus_unarchive
   when: nexus_download | changed

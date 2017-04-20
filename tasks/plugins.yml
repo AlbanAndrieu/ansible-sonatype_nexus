@@ -4,7 +4,7 @@
   get_url:
     url={{item.url}}/{{item.file}}
     dest="{{nexus_dir_tmp}}"
-  with_items: nexus_plugins
+  with_items: "{{ nexus_plugins }}"
   register: download_results 
   ignore_errors: yes
 
@@ -18,6 +18,6 @@
     copy=no
     src="{{ nexus_dir_tmp }}/{{ item.file }}"
     dest="{{ nexus_dir_plugins }}/"
-  sudo_user: "{{ nexus_user }}"
+  become_user: "{{ nexus_user }}"
   when: download_results | changed
-  with_items: nexus_plugins
+  with_items: "{{ nexus_plugins }}"

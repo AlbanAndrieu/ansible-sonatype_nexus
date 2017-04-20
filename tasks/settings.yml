@@ -37,5 +37,5 @@
     version="{{ nexus_config_version | default(omit) }}"
     force=yes
     accept_hostkey=yes
-  sudo_user: "{{ nexus_user }}"
+  become_user: "{{ nexus_user }}"
   when: nexus_config_pull
