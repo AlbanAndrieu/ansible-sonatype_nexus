@@ -46,6 +46,7 @@
      dest="{{ nexus_dir_base }}/"
      creates="{{ nexus_dir_base }}/{{ tar_dir_name.stdout }}/bin"
   become_user: "{{ nexus_user }}"
+  become: yes  
   notify: restart nexus
   register: nexus_unarchive
   when: nexus_download | changed
