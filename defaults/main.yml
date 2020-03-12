@@ -1,8 +1,11 @@
 ---
 # Nexus Setup Setting Section
 nexus_host                       : "{{ ansible_fqdn }}"
-nexus_version                    : "2.11.2-03"
-nexus_download_URL               : "http://download.sonatype.com/nexus/oss/{{ nexus_archive }}"
+nexus_version_major              : "3"
+nexus_version_minor              : "21.1-01"
+nexus_version                    : "{{ nexus_version_major }}.{{ nexus_version_minor }}"
+#nexus_download_URL               : "http://download.sonatype.com/nexus/oss/{{ nexus_archive }}"
+nexus_download_URL               : "http://download.sonatype.com/nexus/3/{{ nexus_archive }}"
 
 # Jetty
 jetty_bind                       : "0.0.0.0"
@@ -17,12 +20,17 @@ nexus_home                       : "/home/{{ nexus_user }}"
 # Directory & files
 nexus_service_name               : "nexus"     # Think twice before changing it :)
 nexus_sonatype_work_name         : "sonatype-work"
+#nexus_dir_conf                   : "conf" # for version 2
+nexus_dir_conf                   : "etc" # for version 3
 nexus_dir_base                   : "{{ nexus_home }}"
 nexus_dir_base_bundle            : "{{ nexus_home }}/{{ nexus_service_name }}"
 nexus_dir_sonatype_work          : "{{ nexus_dir_base }}/{{ nexus_sonatype_work_name }}"
 nexus_dir_plugins                : "{{ nexus_dir_base_bundle }}/nexus/WEB-INF/plugin-repository"
 nexus_dir_temp                   : "/tmp"
-nexus_archive                    : "nexus-{{ nexus_version }}-bundle.tar.gz"
+#nexus_archive                    : "nexus-{{ nexus_version }}-bundle.tar.gz"
+nexus_archive                    : "nexus-{{ nexus_version }}-unix.tar.gz"
+#nexus_wrapper_cmd                : "$NEXUS_HOME/bin/jsw/$DIST_OS-$DIST_ARCH-$DIST_BITS/wrapper"
+nexus_wrapper_cmd                : "$NEXUS_HOME/bin/nexus"
 
 # Download  config from GIT
 # **** WARNING WILL REMOVE CONF DIR  ******

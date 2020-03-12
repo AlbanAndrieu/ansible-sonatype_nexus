@@ -1,14 +1,18 @@
 [Unit]
 Description=Sonatype Nexus
+After=network.target
 
 [Service]
 Type=forking
+LimitNOFILE=65536
 EnvironmentFile=-/etc/default/nexus
 PIDFile={{ nexus_dir_base }}/{{ nexus_service_name }}/bin/jsw/linux-x86-64/nexus.pid
 ExecStart=/etc/init.d/nexus start
 ExecReload=/etc/init.d/nexus restart
 ExecStop=/etc/init.d/nexus stop
+User=nexus
+Restart=on-abort
 
 [Install]
 Alias=nexus
-WantedBy=default.target
+WantedBy=multi-user.target

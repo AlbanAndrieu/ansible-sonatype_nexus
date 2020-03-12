@@ -2,8 +2,8 @@
 
 - name: settings | Deploy nexus.properties
   template:
-    src=nexus.properties.j2
-    dest="{{ nexus_dir_base }}/{{ tar_dir_name.stdout }}/conf/nexus.properties"
+    src=nexus{{ nexus_version_major }}.properties.j2
+    dest="{{ nexus_dir_base_bundle }}/{{ nexus_dir_conf }}/nexus.properties"
     owner="{{ nexus_user }}"
     group="{{ nexus_user }}"
     mode=0644

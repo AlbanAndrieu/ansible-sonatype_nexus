@@ -35,7 +35,7 @@
 
 - name: install | Resolve nexus_dir name from tar archive
   shell:
-    tar tf {{nexus_dir_temp}}/{{nexus_archive}} | head -1
+    tar tf {{ nexus_dir_temp }}/{{ nexus_archive }} | head -1
   changed_when: False
   register: tar_dir_name
 
@@ -49,7 +49,7 @@
   become: yes  
   notify: restart nexus
   register: nexus_unarchive
-  when: nexus_download | changed
+  when: nexus_download.changed
 
 - name: install | Change sonatype-work nexus ownership (and create)
   file:
@@ -58,7 +58,7 @@
     group={{ nexus_group }}
     state=directory
     recurse=yes
-  when: nexus_download | changed
+  when: nexus_download.changed
 
 - name: install | update sym link nexus
   file:
@@ -67,11 +67,12 @@
      owner="{{ nexus_user }}"
      group="{{ nexus_group }}"
      state=link
-  when: nexus_download | changed
-
+  when: nexus_download.changed
+  ignore_errors: true
+  
 - name: install | Install boot script
   template:
-    src=nexus_init.d.j2
+    src=nexus_init{{ nexus_version_major }}.d.j2
     dest="/etc/init.d/{{ nexus_service_name }}"
     owner=root
     group=root
@@ -87,8 +88,12 @@
     mode=0644
   notify: restart nexus
 
+#- name: install | Start at boot time
+#  command: systemctl enable nexus.service
+
 - name: install | Start/Restart nexus to create sonatype-work
   service:
      name="{{ nexus_service_name }}"
      state=restarted
-  when: nexus_unarchive | changed
+     enabled=yes
+  when: nexus_unarchive.changed
