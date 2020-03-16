@@ -2,7 +2,7 @@
 # Nexus Setup Setting Section
 nexus_host                       : "{{ ansible_fqdn }}"
 nexus_version_major              : "3"
-nexus_version_minor              : "21.1-01"
+nexus_version_minor              : "0.0-03"
 nexus_version                    : "{{ nexus_version_major }}.{{ nexus_version_minor }}"
 #nexus_download_URL               : "http://download.sonatype.com/nexus/oss/{{ nexus_archive }}"
 nexus_download_URL               : "http://download.sonatype.com/nexus/3/{{ nexus_archive }}"
@@ -13,12 +13,12 @@ jetty_port                       : "8081"
 nexus_url                        : "http://{{ nexus_host }}:{{ jetty_port }}"
 
 # Nexus system user
-nexus_user                       : nexus
-nexus_group                      : nexus
+nexus_user                       : nexus3
+nexus_group                      : nexus3
 nexus_home                       : "/home/{{ nexus_user }}"
 
 # Directory & files
-nexus_service_name               : "nexus"     # Think twice before changing it :)
+nexus_service_name               : "nexus{{ nexus_version_major }}"     # Think twice before changing it :)
 nexus_sonatype_work_name         : "sonatype-work"
 #nexus_dir_conf                   : "conf" # for version 2
 nexus_dir_conf                   : "etc" # for version 3

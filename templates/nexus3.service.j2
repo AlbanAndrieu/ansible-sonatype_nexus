@@ -1,0 +1,16 @@
+[Unit]
+Description=Sonatype Nexus
+After=network.target
+
+[Service]
+Type=forking
+User=nexus
+Group=nexus
+LimitNOFILE=65536
+ExecStart=/usr/local/nexus/nexus/bin/nexus start
+ExecStop=/usr/local/nexus/nexus/bin/nexus stop
+Restart=on-abort
+
+[Install]
+Alias=nexus
+WantedBy=multi-user.target
