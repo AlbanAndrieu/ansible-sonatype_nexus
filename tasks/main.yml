@@ -1,11 +1,11 @@
 ---
 
-- include     : install.yml
+- ansible.builtin.import_tasks: install.yml
 
-- include     : plugins.yml
+- ansible.builtin.import_tasks: plugins.yml
   when        : nexus_plugins_install  
 
-- include     : settings.yml
+- ansible.builtin.import_tasks: settings.yml
 
 # Flush handler to restart nexus after untar
 - meta: flush_handlers
